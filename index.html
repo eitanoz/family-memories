@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Family Memories Tracker</title>
   <style>
     :root {
@@ -18,69 +18,360 @@
       --star: #facc15;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg); color: var(--text-main); display: flex; justify-content: center; padding: 20px 16px; min-height: 100vh; }
-    .container { width: 100%; max-width: 600px; }
-    .header { text-align: center; margin-bottom: 20px; }
-    .header h1 { font-size: 1.5rem; font-weight: 700; color: #fff; }
-    .header p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
-
-    .nav-tabs { display: flex; gap: 8px; background: var(--card-bg); padding: 6px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 18px; }
-    .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; }
-    .tab-btn.active { background: var(--primary); color: #fff; }
-
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4); }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    .form-group { margin-bottom: 16px; }
-    label { display: block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px; }
-
-    .chip-group { display: flex; gap: 8px; flex-wrap: wrap; }
-    .chip { background: #334155; color: #cbd5e1; border: 1px solid transparent; padding: 7px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 500; cursor: pointer; user-select: none; }
-    .chip.active { background: var(--primary); color: #fff; }
-
-    input[type="text"], input[type="date"], select, textarea {
-      width: 100%; padding: 11px 13px; background: var(--input-bg); border: 1px solid var(--border); border-radius: 10px; color: #f8fafc; font-size: 0.95rem; outline: none;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-    textarea { min-height: 80px; resize: vertical; }
 
-    .two-cols { display: flex; gap: 12px; }
-    .two-cols > div { flex: 1; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      padding: 20px 16px;
+      min-height: 100vh;
+    }
 
-    .checkbox-row { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; margin-top: 6px; }
-    .checkbox-row input { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+    .container {
+      width: 100%;
+      max-width: 600px;
+    }
 
-    .btn-submit { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 6px; }
-    .btn-submit:hover { background: var(--primary-hover); }
-    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
 
-    .status-badge { display: none; margin-top: 14px; padding: 12px; border-radius: 8px; font-size: 0.88rem; text-align: center; }
-    .status-success { background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); color: #4ade80; }
-    .status-error { background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; }
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
 
-    /* Controls & Records */
-    .filter-bar { display: grid; grid-template-columns: 2fr 1fr auto; gap: 8px; margin-bottom: 14px; }
-    .fav-filter-btn { background: #334155; border: 1px solid var(--border); color: #cbd5e1; border-radius: 10px; padding: 0 12px; cursor: pointer; font-size: 1.1rem; }
-    .fav-filter-btn.active { background: #ca8a04; color: #fff; border-color: #eab308; }
+    .header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
 
-    .record-card { background: var(--input-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 12px; position: relative; }
-    .record-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-right: 32px; }
-    .record-title { font-weight: 700; color: #fff; font-size: 0.95rem; }
-    .record-tag { font-size: 0.75rem; background: var(--border); color: var(--accent); padding: 3px 8px; border-radius: 6px; font-weight: 600; }
-    .record-star { position: absolute; top: 12px; right: 14px; font-size: 1.3rem; color: #475569; cursor: pointer; user-select: none; }
-    .record-star.starred { color: var(--star); }
-    .record-quote { font-style: italic; color: #e2e8f0; margin: 8px 0; font-size: 0.95rem; border-left: 3px solid var(--primary); padding-left: 8px; }
-    .record-meta { font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 12px; margin-top: 6px; flex-wrap: wrap; }
-    .btn-edit { background: transparent; border: 1px solid var(--border); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; margin-top: 8px; }
-    .btn-edit:hover { background: var(--border); }
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--card-bg);
+      padding: 6px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    /* Chips */
+    .chip-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: #334155;
+      color: #cbd5e1;
+      border: 1px solid transparent;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .chip.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 11px 13px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: #f8fafc;
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--accent);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .two-cols {
+      display: flex;
+      gap: 12px;
+    }
+
+    .two-cols > div {
+      flex: 1;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      margin-top: 6px;
+    }
+
+    .checkbox-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .btn-submit:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status-badge {
+      display: none;
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    .status-success {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #4ade80;
+    }
+
+    .status-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    /* Filters & Record Cards */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: 2fr 1fr auto;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .fav-filter-btn {
+      background: #334155;
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+      border-radius: 10px;
+      padding: 0 14px;
+      cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    .fav-filter-btn.active {
+      background: #ca8a04;
+      color: #fff;
+      border-color: #eab308;
+    }
+
+    .record-card {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .record-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      padding-right: 32px;
+    }
+
+    .record-title {
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .record-tag {
+      font-size: 0.75rem;
+      background: var(--border);
+      color: var(--accent);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    .record-star {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      font-size: 1.3rem;
+      color: #475569;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .record-star.starred {
+      color: var(--star);
+    }
+
+    .record-quote {
+      font-style: italic;
+      color: #e2e8f0;
+      margin: 8px 0;
+      font-size: 0.95rem;
+      border-left: 3px solid var(--primary);
+      padding-left: 8px;
+    }
+
+    .record-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      gap: 12px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-edit {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--accent);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-edit:hover {
+      background: var(--border);
+    }
 
     /* Modal */
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); justify-content: center; align-items: center; padding: 16px; z-index: 100; }
-    .modal-content { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 480px; padding: 20px; max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-    .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+    #editModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      padding: 20px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -93,8 +384,8 @@
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
-      <button type="button" class="tab-btn active" id="tabBtnLog" onclick="switchTab('logTab')">Log Memory</button>
-      <button type="button" class="tab-btn" id="tabBtnRecords" onclick="switchTab('recordsTab')">All Records</button>
+      <button type="button" class="tab-btn active" id="tabBtnLog">Log Memory</button>
+      <button type="button" class="tab-btn" id="tabBtnRecords">All Records</button>
     </div>
 
     <div class="card">
@@ -104,12 +395,12 @@
           <div class="form-group">
             <label>Subject</label>
             <div class="chip-group" id="subjectChips">
-              <button type="button" class="chip active" onclick="setSubject('Lihi', this)">Lihi</button>
-              <button type="button" class="chip" onclick="setSubject('Adam', this)">Adam</button>
-              <button type="button" class="chip" onclick="setSubject('Eitan', this)">Eitan</button>
-              <button type="button" class="chip" onclick="setSubject('Sima', this)">Sima</button>
-              <button type="button" class="chip" onclick="setSubject('Family', this)">Family</button>
-              <button type="button" class="chip" onclick="setSubject('Other', this)">Other</button>
+              <button type="button" class="chip active" data-subject="Lihi">Lihi</button>
+              <button type="button" class="chip" data-subject="Adam">Adam</button>
+              <button type="button" class="chip" data-subject="Eitan">Eitan</button>
+              <button type="button" class="chip" data-subject="Sima">Sima</button>
+              <button type="button" class="chip" data-subject="Family">Family</button>
+              <button type="button" class="chip" data-subject="Other">Other</button>
             </div>
             <input type="text" id="customSubject" placeholder="Enter name" style="display: none; margin-top: 8px;" />
           </div>
@@ -161,11 +452,11 @@
       <!-- Tab 2: Records List -->
       <div id="recordsTab" class="tab-content">
         <div class="filter-bar">
-          <input type="text" id="searchInput" placeholder="Search..." oninput="renderRecords()" />
-          <select id="yearFilter" onchange="renderRecords()">
+          <input type="text" id="searchInput" placeholder="Search..." />
+          <select id="yearFilter">
             <option value="ALL">All Years</option>
           </select>
-          <button type="button" id="favFilterBtn" class="fav-filter-btn" title="Filter Favorites" onclick="toggleFavFilter()">★</button>
+          <button type="button" id="favFilterBtn" class="fav-filter-btn" title="Filter Favorites">★</button>
         </div>
         <div id="recordsList">Loading records...</div>
       </div>
@@ -173,11 +464,11 @@
   </div>
 
   <!-- Edit Modal -->
-  <div id="editModal" class="modal-overlay">
+  <div id="editModal">
     <div class="modal-content">
       <div class="modal-header">
         <h3>Update Memory</h3>
-        <button class="modal-close" onclick="closeEditModal()">&times;</button>
+        <button type="button" class="modal-close" id="modalCloseBtn">&times;</button>
       </div>
       <form id="editForm">
         <input type="hidden" id="editRowIndex" />
@@ -231,47 +522,67 @@
     </div>
   </div>
 
-  <script>    
+  <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6iV0gyjftQAIEWUzb2VzOBIL6OvsNmk4wwlTHNvuVRYjDv1wI_NPhzw27XQH4wfk/exec";
     let allRecords = [];
     let onlyFavorites = false;
+    let selectedSubject = 'Lihi';
 
-    // Set today's date safely
-    try {
-      document.getElementById('date').value = new Date().toISOString().split('T')[0];
-    } catch (e) {}
+    window.addEventListener('DOMContentLoaded', () => {
+      // Set today's date
+      const dateInput = document.getElementById('date');
+      if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
 
-    // Tab switcher without blocking UI
-    function switchTab(tabId) {
-      document.getElementById('tabBtnLog').classList.toggle('active', tabId === 'logTab');
-      document.getElementById('tabBtnRecords').classList.toggle('active', tabId === 'recordsTab');
-      document.getElementById('logTab').classList.toggle('active', tabId === 'logTab');
-      document.getElementById('recordsTab').classList.toggle('active', tabId === 'recordsTab');
+      // Tab Buttons
+      const tabBtnLog = document.getElementById('tabBtnLog');
+      const tabBtnRecords = document.getElementById('tabBtnRecords');
+      const logTab = document.getElementById('logTab');
+      const recordsTab = document.getElementById('recordsTab');
 
-      if (tabId === 'recordsTab') {
+      tabBtnLog.addEventListener('click', () => {
+        tabBtnLog.classList.add('active');
+        tabBtnRecords.classList.remove('active');
+        logTab.classList.add('active');
+        recordsTab.classList.remove('active');
+      });
+
+      tabBtnRecords.addEventListener('click', () => {
+        tabBtnRecords.classList.add('active');
+        tabBtnLog.classList.remove('active');
+        recordsTab.classList.add('active');
+        logTab.classList.remove('active');
         fetchRecords();
-      }
-    }
+      });
 
-    let currentSubject = 'Lihi';
-    function setSubject(name, btn) {
-      document.querySelectorAll('#subjectChips .chip').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      currentSubject = name;
-      const customInput = document.getElementById('customSubject');
-      if (name === 'Other') {
-        customInput.style.display = 'block';
-        customInput.focus();
-      } else {
-        customInput.style.display = 'none';
-      }
-    }
+      // Subject Chip Listeners
+      const chips = document.querySelectorAll('#subjectChips .chip');
+      const customSubj = document.getElementById('customSubject');
+      chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          chips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          selectedSubject = chip.getAttribute('data-subject');
+          if (selectedSubject === 'Other') {
+            customSubj.style.display = 'block';
+            customSubj.focus();
+          } else {
+            customSubj.style.display = 'none';
+          }
+        });
+      });
 
-    function toggleFavFilter() {
-      onlyFavorites = !onlyFavorites;
-      document.getElementById('favFilterBtn').classList.toggle('active', onlyFavorites);
-      renderRecords();
-    }
+      // Search & Filters
+      document.getElementById('searchInput').addEventListener('input', renderRecords);
+      document.getElementById('yearFilter').addEventListener('change', renderRecords);
+      document.getElementById('favFilterBtn').addEventListener('click', () => {
+        onlyFavorites = !onlyFavorites;
+        document.getElementById('favFilterBtn').classList.toggle('active', onlyFavorites);
+        renderRecords();
+      });
+
+      // Close modal
+      document.getElementById('modalCloseBtn').addEventListener('click', closeEditModal);
+    });
 
     // Submit New Entry
     document.getElementById('memoryForm').addEventListener('submit', async (e) => {
@@ -282,9 +593,10 @@
       btn.innerText = 'Saving...';
       badge.style.display = 'none';
 
-      const finalSubject = currentSubject === 'Other'
-        ? (document.getElementById('customSubject').value.trim() || 'Other')
-        : currentSubject;
+      const customInput = document.getElementById('customSubject');
+      const finalSubject = selectedSubject === 'Other'
+        ? (customInput.value.trim() || 'Other')
+        : selectedSubject;
 
       const payload = {
         date: document.getElementById('date').value,
@@ -319,29 +631,35 @@
       }
     });
 
-    // Fetch Records via JSONP
-    function fetchRecords() {
+    // Fetch Records via direct fetch following Google redirect
+    async function fetchRecords() {
       const container = document.getElementById('recordsList');
       container.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 14px;">Loading records from Google Sheets...</p>';
 
-      const oldScript = document.getElementById('jsonpCallback');
-      if (oldScript) oldScript.remove();
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'GET',
+          redirect: 'follow'
+        });
 
-      const script = document.createElement('script');
-      script.id = 'jsonpCallback';
-      script.src = SCRIPT_URL + '?callback=handleDataResponse&t=' + Date.now();
-      script.onerror = function() {
-        container.innerHTML = '<p style="color: #f87171; text-align: center; padding: 14px;">Could not connect to Google Sheets. Check deployment settings.</p>';
-      };
-      document.body.appendChild(script);
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+
+        const data = await response.json();
+        allRecords = (data && data.records) ? data.records : [];
+        populateYearFilter();
+        renderRecords();
+      } catch (err) {
+        console.error('Fetch error:', err);
+        container.innerHTML = `
+          <div style="text-align: center; padding: 14px; color: #f87171;">
+            <p>Could not load records (${escapeHtml(err.message)}).</p>
+            <button type="button" class="btn-submit" style="width: auto; padding: 6px 16px; margin-top: 10px;" onclick="fetchRecords()">Try Again</button>
+          </div>
+        `;
+      }
     }
-
-    // JSONP callback
-    window.handleDataResponse = function(json) {
-      allRecords = (json && json.records) ? json.records : [];
-      populateYearFilter();
-      renderRecords();
-    };
 
     function populateYearFilter() {
       const yearSelect = document.getElementById('yearFilter');
@@ -450,7 +768,8 @@
       document.getElementById('editNotes').value = record.notes;
       document.getElementById('editFavorite').checked = record.favorite === true;
 
-      document.getElementById('editModal').style.display = 'flex';
+      const modal = document.getElementById('editModal');
+      modal.style.display = 'flex';
     }
 
     function closeEditModal() {
